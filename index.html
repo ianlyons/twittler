@@ -47,6 +47,7 @@
       #tweets-waiting {
         background-color: #d5efcd;
         text-align: center;
+        cursor: pointer;
       }
     </style>
   </head>
@@ -83,6 +84,7 @@
         var firstRun = true;
         var lengthHolder = streams.home.length -1;
         var messageActive;
+          // run through all of this 
           setInterval(function() {
             if(firstRun == true) {
               var index = streams.home.length - 1;
@@ -102,9 +104,24 @@
                 messageActive = true;
               } else if (messageActive) {
                 $('#tweets-waiting').text('See the ' + tweetsWaiting + ' Tweets waiting for you!');
+                $('#tweets-waiting').on('click', function(event) {
+                  event.preventDefault();
+                  $('#tweets-waiting').remove();
+                  index = streams.home.length - 1;
+                  while(index > lengthHolder) {
+                    var tweet = streams.home[index];
+                    var $tweet = $('<article class="tweet"></article>');
+                    $tweet.prependTo($container).html('<span class="username">@' + tweet.user + '</span><span class="message">' + tweet.message + '</span><span class="created-at">' + tweet.created_at + '</span>');
+                    index -= 1;
+                  }
+                  messageActive = false;
+                  lengthHolder = streams.home.length-1;
+                })
               }
             }
           }, 2000);
+
+
       });
 
     </script>
