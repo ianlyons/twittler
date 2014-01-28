@@ -17,7 +17,6 @@
         max-width: 600px;
         min-width: 300px;
         margin: 20px auto 0;
-        padding: 10px;
         border-radius: 3px;
         box-shadow: 2px 2px 10px #999;
         border: solid #d7d7d7 1px;
@@ -25,7 +24,7 @@
 
       article.tweet {
         border-bottom: solid #f0f0f0 1px;
-        padding: 12px 0;
+        padding: 16px;
         font-size:17px;
       }
 
@@ -35,9 +34,19 @@
 
       .username {
         display: block;
-       /* font-size: 17px;*/
         margin-bottom: 4px;
         color: #d7d7d7;
+      }
+
+      .created-at {
+        display: block;
+        font-size: 10px;
+        margin-top:3px;
+      }
+
+      #tweets-waiting {
+        background-color: #d5efcd;
+        text-align: center;
       }
     </style>
   </head>
@@ -46,19 +55,56 @@
     </div>
     <script>
 
-      $(document).ready(function(){
+      // var showTweets = function(tweets) {
+
+      // }
+
+      // var fetchTweets = function() {
+      //   var firstRun = true, index, tweet;
+      //   if(firstRun == true) {
+      //     index = streams.home.length-1;
+      //     while(index > 0) {
+      //       tweet = streams.home[index];
+      //       var $tweet = $('<article class="tweet"></article>');
+      //       $tweet.html('<span class="username">@' + tweet.user + '</span><span class="message">' + tweet.message + '</span>');
+      //       $
+      //     }
+      //   }
+
+      //   return tweets;
+      // }
+
+
+
+
+      $(document).ready(function() {
         var $container = $('#container');
         $container.html('');
-
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<article class="tweet"></article>');
-          $tweet.html('<span class="username">@' + tweet.user + '</span><span class="message">' + tweet.message + '</span>');
-          $tweet.appendTo($container);
-          index -= 1;
-        }
-
+        var firstRun = true;
+        var lengthHolder = streams.home.length -1;
+        var messageActive;
+          setInterval(function() {
+            if(firstRun == true) {
+              var index = streams.home.length - 1;
+              console.log(lengthHolder);
+                while(index > 0) {
+                  var tweet = streams.home[index];
+                  var $tweet = $('<article class="tweet"></article>');
+                  $tweet.prependTo($container).html('<span class="username">@' + tweet.user + '</span><span class="message">' + tweet.message + '</span><span class="created-at">' + tweet.created_at + '</span>');
+                  index -= 1;
+                  firstRun = false;
+                }
+            } else {
+              var tweetsWaiting = (streams.home.length-1) - lengthHolder;
+              if((tweetsWaiting > 0) && (!messageActive)) {
+                console.log(messageActive);
+                $container.prepend('<article id="tweets-waiting" class="tweet">See the ' + tweetsWaiting + ' Tweets waiting for you!</article>');
+                messageActive = true;
+              } else if (messageActive) {
+                $('#tweets-waiting').text('See the ' + tweetsWaiting + ' Tweets waiting for you!');
+              }
+            }
+          }, 2000);
       });
 
     </script>
